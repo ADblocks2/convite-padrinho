@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Convite Especial</title>
+  <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style type="text/css">
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #dbe9f4, #f0f0f8);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .convite,
+    .agradecimento {
+      max-width: 450px;
+      width: 100%;
+      background-color: #ffffff;
+      border: 2px solid #4a90e2;
+      border-radius: 10px;
+      padding: 20px 25px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.15);
+      transition: transform 0.8s ease, opacity 0.8s ease;
+    }
+
+    .convite.hidden {
+      opacity: 0;
+      transform: scale(0.9);
+      z-index: 0;
+    }
+
+    .agradecimento {
+      opacity: 0;
+      z-index: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    .agradecimento.visible {
+      opacity: 1;
+      z-index: 2;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .foto-prof {
+      display: block;
+      margin: 0 auto 15px auto;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #4a90e2;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #4a90e2;
+      text-align: center;
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.5em;
+      text-align: justify;
+      margin-bottom: 10px;
+    }
+
+    .assinatura {
+      margin-top: 30px;
+      text-align: right;
+      font-style: italic;
+      font-size: 14px;
+    }
+
+    .botoes {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    button {
+      font-family: 'Montserrat', sans-serif;
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button.aceitar {
+      background-color: #4a90e2;
+      color: white;
+    }
+
+    button.aceitar:hover {
+      background-color: #357ab8;
+    }
+
+    button.recusar {
+      background-color: #ddd;
+      color: #333;
+    }
+
+    button.recusar:hover {
+      background-color: #bbb;
+    }
+
+    .mensagem-humor {
+      margin-top: 15px;
+      text-align: center;
+      font-style: italic;
+      color: #b04545;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="convite" id="convite">
+    <img src="foto_prof.png" alt="Foto do Professor" class="foto-prof" />
+    <h1>Convite Especial</h1>
+    <p>
+      É com grande alegria e honra que nós, alunos da Turma de Informática 2025, 
+      convidamos você para ser o nosso <strong>Padrinho de Turma</strong>.
+    </p>
+    <p>
+      Sua trajetória, dedicação e inspiração fazem de você uma figura essencial 
+      na nossa formação. Ter você ao nosso lado nesse momento tão importante seria 
+      uma grande honra.
+    </p>
+    <p>
+      Esperamos contar com sua presença e apoio nesta nova etapa de nossas vidas.
+    </p>
+    <div class="assinatura">
+      Com carinho,<br />
+      Sua 1° turma de informática
+    </div>
+    <div class="botoes" id="botoes">
+      <button class="aceitar" onclick="aceitarConvite()">Aceitar</button>
+      <button class="recusar" onclick="recusarConvite()">Recusar</button>
+    </div>
+    <div class="mensagem-humor" id="mensagemHumor"></div>
+  </div>
+
+  <div class="agradecimento" id="agradecimento">
+    <h1>Obrigado!</h1>
+    <p>
+      Estamos muito felizes com sua aceitação. Sua presença será uma inspiração 
+      e motivo de orgulho para todos nós.
+    </p>
+    <p class="assinatura">
+      Com gratidão,<br />
+      Sua 1° turma de informática
+    </p>
+  </div>
+
+  <!-- Áudio -->
+  <audio id="somAceite">
+    <source src="confete.mp3" type="audio/mpeg" />
+    Seu navegador não suporta áudio.
+  </audio>
+
+  <script type="text/javascript">
+    let recusas = 0;
+
+    function aceitarConvite() {
+      const audio = document.getElementById('somAceite');
+      audio.play();
+
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
+      document.getElementById('convite').classList.add('hidden');
+      const agradecimento = document.getElementById('agradecimento');
+      setTimeout(() => {
+        agradecimento.classList.add('visible');
+      }, 500);
+    }
+
+    function recusarConvite() {
+      const mensagem = document.getElementById('mensagemHumor');
+      const botoes = document.getElementById('botoes');
+      recusas++;
+
+      if (recusas === 1) {
+        mensagem.textContent = "Que pena que você recusou, mas essa opção não é válida 😅";
+      } else if (recusas === 2) {
+        mensagem.textContent = "Acho que você não entendeu -_-";
+        botoes.innerHTML = `
+          <button class="aceitar" onclick="aceitarConvite()">Aceitar</button>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
